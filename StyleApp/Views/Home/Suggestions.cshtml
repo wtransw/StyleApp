@@ -1,0 +1,47 @@
+@model StyleApp.Models.ExploreViewModel
+@{
+    ViewData["Title"] = "Outfit ideas for your wardrobe";
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+<section class="page-shell">
+    <div class="page-heading-row suggestions-heading"><div><p class="eyebrow">START WITH WHAT YOU OWN</p><h1>Make your pieces<br />work harder.</h1><p class="page-intro">Choose one or more wardrobe items. We’ll find real outfit inspiration around your selection.</p></div><a class="text-link" asp-action="Wardrobe">Edit your wardrobe →</a></div>
+    <form asp-action="Suggestions" method="get" id="suggestionsForm">
+        @if (Model.State.Wardrobe.Count == 0)
+        {
+            <div class="empty-state"><span class="empty-icon">▤</span><h2>Add some wardrobe pieces first</h2><p>Once you’ve added a few items, select them here for tailored outfit inspiration.</p><a class="button button-dark" asp-action="Wardrobe">Go to my wardrobe</a></div>
+        }
+        else
+        {
+            <div class="selection-panel"><div class="selection-heading"><div><p class="eyebrow">YOUR CLOSET</p><h2>What would you like to wear?</h2></div><button class="button button-accent" id="suggestionsIdeasButton" type="submit" disabled>Select pieces first</button></div>
+                <div class="selection-list">
+                    @foreach (var item in Model.State.Wardrobe)
+                    {
+                        <label class="selection-item"><input type="checkbox" name="itemIds" value="@item.Id" checked="@(Model.SelectedItemIds.Contains(item.Id))" /><span class="selection-check"></span><span class="selection-item-copy"><strong>@item.Name</strong><small>@item.Color · @item.Category · @item.Style</small></span><span class="selection-season">@item.Season</span></label>
+                    }
+                </div>
+            </div>
+        }
+    </form>
+
+    @if (Model.SelectedItemIds.Count > 0)
+    {
+        <div class="recommendations-intro"><p class="eyebrow">INSPIRED BY YOUR PICKS</p><h2>Looks to build around them</h2><p>Ideas for @string.Join(", ", Model.State.Wardrobe.Where(item => Model.SelectedItemIds.Contains(item.Id)).Select(item => item.Name))</p></div>
+    }
+    @if (!Model.IsConfigured || Model.Error is not null)
+    {
+        <div class="notice-panel"><span class="notice-icon">✳</span><div><strong>@(Model.IsConfigured ? "A little connection trouble" : "Set up your photo provider")</strong><p>@Model.Error</p></div></div>
+    }
+    else if (Model.Looks.Count > 0)
+    {
+        <div class="look-grid suggestions-look-grid">
+            @foreach (var look in Model.Looks)
+            {
+                @await Html.PartialAsync("_LookCard", new StyleApp.Models.LookCardViewModel { Look = look, IsFavorite = Model.State.Favorites.Any(saved => saved.Id == look.Id), IsWishlisted = Model.State.Wishlist.Any(saved => saved.Id == look.Id), ReturnUrl = returnUrl })
+            }
+        </div>
+    }
+    else if (Model.SelectedItemIds.Count == 0 && Model.State.Wardrobe.Count > 0)
+    {
+        <div class="empty-state compact-empty"><span class="empty-icon">✳</span><h2>Pick a piece to get started</h2><p>Select one or more wardrobe items above, and we’ll look for outfits built around them.</p></div>
+    }
+</section>

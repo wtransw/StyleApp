@@ -1,0 +1,52 @@
+@{
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Threadline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/StyleApp.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" asp-controller="Home" asp-action="Index" aria-label="Threadline home"><span class="brand-mark">t.</span><span>threadline</span></a>
+            <nav class="main-nav" aria-label="Main navigation">
+                <a asp-controller="Home" asp-action="Looks">Discover</a>
+                <a asp-controller="Home" asp-action="Trends">Trends</a>
+                <a asp-controller="Home" asp-action="Wardrobe">My wardrobe</a>
+                <a asp-controller="Home" asp-action="Suggestions">Style ideas</a>
+            </nav>
+            <div class="header-actions">
+                <a class="saved-link" asp-controller="Home" asp-action="Favorites" title="Favorites">♡</a>
+                <a class="saved-link" asp-controller="Home" asp-action="Wishlist" title="Wishlist">♧</a>
+                <form asp-controller="Home" asp-action="SetGender" method="post" class="gender-switch">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <label for="genderSelect">Style for</label>
+                    <select id="genderSelect" name="gender" onchange="this.form.submit()" aria-label="Choose men's or women's styles">
+                        <option value="woman" selected="@(ViewData["Gender"] as string != "man")">Women</option>
+                        <option value="man" selected="@(ViewData["Gender"] as string == "man")">Men</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </header>
+    <main role="main">
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner"><span>Threadline · your personal style, considered.</span><a asp-controller="Home" asp-action="Privacy">Privacy</a></div>
+    </footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

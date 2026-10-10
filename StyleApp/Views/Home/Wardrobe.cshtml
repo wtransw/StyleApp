@@ -1,0 +1,68 @@
+@model StyleApp.Models.PersonalStyleState
+@{
+    ViewData["Title"] = "My wardrobe";
+}
+<section class="page-shell">
+    <div class="page-heading-row">
+        <div><p class="eyebrow">YOUR PERSONAL EDIT</p><h1>My wardrobe</h1><p class="page-intro">Keep track of the pieces you own, then use them to find your next favorite outfit.</p></div>
+        <span class="count-pill">@Model.Wardrobe.Count pieces</span>
+    </div>
+
+    <div class="wardrobe-layout">
+        <section class="panel add-panel">
+            <p class="eyebrow">ADD A PIECE</p>
+            <h2>Make it yours</h2>
+            <form asp-action="AddWardrobeItem" method="post" class="stacked-form">
+                @Html.AntiForgeryToken()
+                <label for="itemName">Item name</label>
+                <input id="itemName" name="item.Name" placeholder="e.g. Navy cardigan" maxlength="80" required />
+                <div class="form-grid-two">
+                    <div><label for="itemCategory">Category</label><select id="itemCategory" name="item.Category"><option>Tops</option><option>Bottoms</option><option>Outerwear</option><option>Shoes</option><option>Accessories</option><option>Dresses</option><option>Other</option></select></div>
+                    <div><label for="itemColor">Color</label><input id="itemColor" name="item.Color" placeholder="e.g. Navy" maxlength="40" /></div>
+                </div>
+                <div class="form-grid-two">
+                    <div><label for="itemSeason">Season</label><select id="itemSeason" name="item.Season"><option>All season</option><option>Spring</option><option>Summer</option><option>Fall</option><option>Winter</option></select></div>
+                    <div><label for="itemStyle">Style</label><select id="itemStyle" name="item.Style"><option>Casual</option><option>Classic</option><option>Sportive</option><option>Smart casual</option><option>Formal</option></select></div>
+                </div>
+                <label for="itemImage">Image URL <span class="optional">(optional)</span></label>
+                <input id="itemImage" name="item.ImageUrl" type="url" placeholder="https://…" />
+                <button class="button button-dark" type="submit">＋ Add to wardrobe</button>
+            </form>
+        </section>
+
+        <section class="wardrobe-content">
+            @if (Model.Wardrobe.Count == 0)
+            {
+                <div class="empty-state"><span class="empty-icon">＋</span><h2>Your wardrobe starts here</h2><p>Add a few pieces you reach for often. You can select any combination to get outfit ideas.</p></div>
+            }
+            else
+            {
+                    <form asp-action="Suggestions" method="get" id="suggestionSelectionForm"></form>
+                    <div class="wardrobe-toolbar"><div><p class="eyebrow">YOUR PIECES</p><h2>Choose items to style</h2></div><button class="button button-accent" id="wardrobeIdeasButton" type="submit" form="suggestionSelectionForm" disabled>Select pieces first</button></div>
+                    <div class="wardrobe-grid">
+                        @foreach (var item in Model.Wardrobe)
+                        {
+                            <article class="wardrobe-card">
+                            <label class="wardrobe-select" title="Select @item.Name for outfit ideas"><input type="checkbox" name="itemIds" value="@item.Id" form="suggestionSelectionForm" /><span class="checkmark"></span></label>
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img class="wardrobe-image" src="@item.ImageUrl" alt="@item.Name" loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="wardrobe-placeholder"><span>@item.Category</span><strong>@item.Name</strong><i>@item.Color</i></div>
+                                }
+                                <div class="wardrobe-card-info"><div><h3>@item.Name</h3><p>@item.Color · @item.Season</p><span class="tag-chip">@item.Category</span><span class="tag-chip">@item.Style</span></div>
+                                    <form asp-action="RemoveWardrobeItem" method="post" class="remove-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="icon-button remove-button" aria-label="Remove @item.Name" title="Remove item">×</button>
+                                    </form>
+                                </div>
+                            </article>
+                        }
+                    </div>
+            }
+        </section>
+    </div>
+</section>

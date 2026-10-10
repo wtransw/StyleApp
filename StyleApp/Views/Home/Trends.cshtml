@@ -1,0 +1,18 @@
+@model StyleApp.Models.TrendsViewModel
+@{
+    ViewData["Title"] = "2026 trends";
+}
+<section class="page-shell">
+    <div class="trends-hero"><div><p class="eyebrow light-eyebrow">THE YEAR AHEAD · 2026</p><h1>A little inspiration<br />for what comes next.</h1><p>Considered directions to try, not rules to follow. Pick what feels like you.</p></div><span class="trend-year">26</span></div>
+    <div class="page-heading-row trend-intro"><div><p class="eyebrow">THE STYLE EDIT</p><h2>2026, in good taste</h2></div><p>Save the ideas you love and make them your own with pieces from your wardrobe.</p></div>
+    <div class="trend-grid">
+        @foreach (var trend in Model.Trends)
+        {
+            <article class="trend-card">
+                <div class="trend-image-wrap"><img src="@trend.ImageUrl" alt="Inspiration for @trend.Name" loading="lazy" /><span class="trend-category">@trend.Category</span></div>
+                <div class="trend-copy"><h3>@trend.Name</h3><p>@trend.Description</p><span class="trend-palette">@trend.Palette</span></div>
+            </article>
+        }
+    </div>
+    <div class="trend-note"><span>✳</span><p><strong>Make it personal.</strong> Trends are a starting point. The best outfits are the ones that feel comfortable, useful, and like you.</p><a asp-action="Looks" class="text-link">Browse real looks →</a></div>
+</section>

@@ -1,0 +1,25 @@
+{
+  "gender": "man",
+  "wardrobe": [
+    {
+      "id": "270bca44-0e47-4984-8f83-4eda0a0a89da",
+      "name": "blue jeans",
+      "category": "Bottoms",
+      "color": "blue",
+      "season": "All season",
+      "style": "Casual",
+      "imageUrl": null
+    },
+    {
+      "id": "5e1956a0-4c5a-4e5e-b16c-3427d63651af",
+      "name": "cardigan",
+      "category": "Tops",
+      "color": "navy",
+      "season": "All season",
+      "style": "Classic",
+      "imageUrl": "https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-AI710B22611002_lifestyle?$rl_4x5_pdp$"
+    }
+  ],
+  "favorites": [],
+  "wishlist": []
+}

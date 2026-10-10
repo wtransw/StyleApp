@@ -1,0 +1,21 @@
+@model StyleApp.Models.SavedLooksViewModel
+@{
+    ViewData["Title"] = Model.Heading;
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+<section class="page-shell">
+    <div class="page-heading-row saved-heading"><div><p class="eyebrow">YOUR PERSONAL COLLECTION</p><h1>@Model.Heading</h1><p class="page-intro">Keep the outfit ideas you love close by, ready whenever you need a little inspiration.</p></div><a class="button button-dark" asp-action="Looks">Discover looks <span>↗</span></a></div>
+    @if (Model.Looks.Count == 0)
+    {
+        <div class="empty-state saved-empty"><span class="empty-icon">♡</span><h2>Nothing saved here yet</h2><p>@Model.EmptyMessage</p><a class="button button-accent" asp-action="Looks">Browse real looks</a></div>
+    }
+    else
+    {
+        <div class="look-grid">
+            @foreach (var look in Model.Looks)
+            {
+                @await Html.PartialAsync("_LookCard", new StyleApp.Models.LookCardViewModel { Look = look, IsFavorite = Model.State.Favorites.Any(saved => saved.Id == look.Id), IsWishlisted = Model.State.Wishlist.Any(saved => saved.Id == look.Id), ReturnUrl = returnUrl })
+            }
+        </div>
+    }
+</section>

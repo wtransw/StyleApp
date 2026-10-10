@@ -1,0 +1,39 @@
+@model StyleApp.Models.LookCardViewModel
+@{
+    var look = Model.Look;
+}
+<article class="look-card">
+    <a class="look-photo-link" href="@look.PhotoPageUrl" target="_blank" rel="noopener noreferrer" aria-label="View the image source">
+        <img class="look-photo" src="@(look.ThumbnailUrl ?? look.ImageUrl)" alt="@look.Description" loading="lazy" />
+    </a>
+    <div class="look-card-body">
+        <div class="look-meta"><span>@look.Season</span><span class="meta-dot">·</span><span>@look.Style</span></div>
+        <p class="look-description">@look.Description</p>
+        @if (look.Tags.Count > 0)
+        {
+            <div class="look-tags" aria-label="Style and clothing tags">
+                @foreach (var tag in look.Tags)
+                {
+                    <span class="tag-chip">@tag</span>
+                }
+            </div>
+        }
+        <div class="look-credit">Image source: <a href="@look.PhotoPageUrl" target="_blank" rel="noopener noreferrer">@look.PhotographerName</a></div>
+        <div class="look-actions">
+            <form asp-action="ToggleFavorite" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="look.Id" value="@look.Id" /><input type="hidden" name="look.ImageUrl" value="@look.ImageUrl" /><input type="hidden" name="look.ThumbnailUrl" value="@look.ThumbnailUrl" />
+                <input type="hidden" name="look.Description" value="@look.Description" /><input type="hidden" name="look.PhotographerName" value="@look.PhotographerName" /><input type="hidden" name="look.PhotographerUrl" value="@look.PhotographerUrl" /><input type="hidden" name="look.PhotoPageUrl" value="@look.PhotoPageUrl" />
+                <input type="hidden" name="look.Tags" value="@string.Join('|', look.Tags)" /><input type="hidden" name="look.Season" value="@look.Season" /><input type="hidden" name="look.Style" value="@look.Style" /><input type="hidden" name="look.ReturnUrl" value="@Model.ReturnUrl" />
+                <button type="submit" class="look-action @(Model.IsFavorite ? "is-active" : "")"><span>@(Model.IsFavorite ? "♥" : "♡")</span> @(Model.IsFavorite ? "Favorited" : "Favorite")</button>
+            </form>
+            <form asp-action="ToggleWishlist" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="look.Id" value="@look.Id" /><input type="hidden" name="look.ImageUrl" value="@look.ImageUrl" /><input type="hidden" name="look.ThumbnailUrl" value="@look.ThumbnailUrl" />
+                <input type="hidden" name="look.Description" value="@look.Description" /><input type="hidden" name="look.PhotographerName" value="@look.PhotographerName" /><input type="hidden" name="look.PhotographerUrl" value="@look.PhotographerUrl" /><input type="hidden" name="look.PhotoPageUrl" value="@look.PhotoPageUrl" />
+                <input type="hidden" name="look.Tags" value="@string.Join('|', look.Tags)" /><input type="hidden" name="look.Season" value="@look.Season" /><input type="hidden" name="look.Style" value="@look.Style" /><input type="hidden" name="look.ReturnUrl" value="@Model.ReturnUrl" />
+                <button type="submit" class="look-action @(Model.IsWishlisted ? "is-active" : "")"><span>♧</span> @(Model.IsWishlisted ? "Saved" : "Wishlist")</button>
+            </form>
+        </div>
+    </div>
+</article>

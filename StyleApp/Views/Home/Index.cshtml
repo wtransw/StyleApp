@@ -1,0 +1,40 @@
+@model StyleApp.Models.PersonalStyleState
+@{
+    ViewData["Title"] = "Your style, in the making";
+    var genderLabel = Model.Gender == "man" ? "Men's" : "Women's";
+}
+<section class="home-shell">
+    <div class="welcome-line"><span>GOOD STYLE STARTS WITH YOU</span><span class="welcome-rule"></span><span>YOUR PERSONAL STYLE SPACE</span></div>
+    <section class="hero-panel">
+        <div class="hero-copy"><p class="eyebrow light-eyebrow">YOUR STYLE, IN THE MAKING</p><h1>Get dressed like<br />you <em>mean it.</em></h1><p>Find fresh inspiration, make the most of your wardrobe, and build a style that feels completely yours.</p><a class="button button-light" asp-action="Looks">Explore the looks <span>↗</span></a></div>
+        <div class="hero-art" role="img" aria-label="Fashion inspiration photograph"><div class="hero-sticker"><span>STYLE NOTE</span><strong>Wear what<br />feels like you.</strong><i>Est. 2026</i></div><span class="hero-photo-credit">Personal style, everyday</span></div>
+    </section>
+
+    <div class="home-section-heading"><div><p class="eyebrow">A GOOD PLACE TO START</p><h2>Build your own kind of style</h2></div><span class="gender-note">Curated for @genderLabel style</span></div>
+    <div class="feature-grid">
+        <a class="feature-card feature-wardrobe" asp-action="Wardrobe"><span class="feature-number">01 / YOUR CLOSET</span><span class="feature-icon">▤</span><h3>Your wardrobe,<br />your way.</h3><p>@Model.Wardrobe.Count pieces in your closet. Add the things you own and style them in new ways.</p><span class="feature-link">Edit your wardrobe <b>→</b></span></a>
+        <a class="feature-card feature-looks" asp-action="Suggestions"><span class="feature-number">02 / OUTFIT IDEAS</span><span class="feature-icon">✳</span><h3>Make more of<br />what you have.</h3><p>Choose one or more closet pieces and find outfit inspiration built around them.</p><span class="feature-link">Get outfit ideas <b>→</b></span></a>
+        <a class="feature-card feature-trends" asp-action="Trends"><span class="feature-number">03 / THE STYLE EDIT</span><span class="feature-icon">↗</span><h3>A fresh take<br />on this year.</h3><p>Explore the silhouettes, colors, and details shaping the 2026 style conversation.</p><span class="feature-link">Explore 2026 trends <b>→</b></span></a>
+    </div>
+
+    <section class="closet-preview">
+        <div class="home-section-heading"><div><p class="eyebrow">FROM YOUR WARDROBE</p><h2>Pieces worth wearing</h2></div><a class="text-link" asp-action="Wardrobe">See your wardrobe →</a></div>
+        @if (Model.Wardrobe.Count == 0)
+        {
+            <div class="closet-empty"><span>＋</span><div><strong>Your closet is a blank canvas.</strong><p>Add the pieces you reach for, then see how they work in new outfits.</p></div><a class="button button-dark" asp-action="Wardrobe">Add your first item</a></div>
+        }
+        else
+        {
+            <div class="mini-wardrobe-grid">
+                @foreach (var item in Model.Wardrobe.Take(4))
+                {
+                    <div class="mini-wardrobe-item">
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl)) { <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" /> }
+                        else { <div class="mini-placeholder"><span>@item.Category</span><b>@item.Name</b></div> }
+                        <div><strong>@item.Name</strong><span>@item.Color · @item.Category</span></div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</section>

@@ -1,0 +1,33 @@
+@model StyleApp.Models.ExploreViewModel
+@{
+    ViewData["Title"] = "Discover looks";
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+<section class="page-shell">
+    <div class="page-heading-row looks-heading"><div><p class="eyebrow">REAL-WORLD STYLE, SAVED FOR YOU</p><h1>Find your next look.</h1><p class="page-intro">Browse outfit inspiration, discover the details, and keep the looks you love.</p></div><a class="button button-dark" asp-action="Suggestions">Style my wardrobe <span>↗</span></a></div>
+    <form asp-action="Looks" method="get" class="filter-bar">
+        <label class="search-field"><span>⌕</span><input type="search" name="query" value="@Model.Query" placeholder="Try: navy cardigan, grey chinos…" aria-label="Search outfit looks" /></label>
+        <label><span class="filter-label">SEASON</span><select name="season"><option selected="@(Model.Season == "All season")">All season</option><option selected="@(Model.Season == "Spring")">Spring</option><option selected="@(Model.Season == "Summer")">Summer</option><option selected="@(Model.Season == "Fall")">Fall</option><option selected="@(Model.Season == "Winter")">Winter</option></select></label>
+        <label><span class="filter-label">FEEL</span><select name="style"><option selected="@(Model.Style == "Any style")">Any style</option><option selected="@(Model.Style == "Sportive")">Sportive</option><option selected="@(Model.Style == "Classic")">Classic</option><option selected="@(Model.Style == "Casual")">Casual</option><option selected="@(Model.Style == "Smart casual")">Smart casual</option></select></label>
+        <button class="button button-accent" type="submit">Find looks</button>
+    </form>
+
+    @if (!Model.IsConfigured || Model.Error is not null)
+    {
+        <div class="notice-panel"><span class="notice-icon">✳</span><div><strong>@(Model.IsConfigured ? "A little connection trouble" : "Set up your photo provider")</strong><p>@Model.Error</p></div></div>
+    }
+    else if (Model.Looks.Count == 0)
+    {
+        <div class="empty-state compact-empty"><span class="empty-icon">⌕</span><h2>No looks found just yet</h2><p>Try a broader search, another season, or a different style.</p></div>
+    }
+    else
+    {
+        <div class="results-heading"><p><strong>@Model.Looks.Count</strong> looks for <strong>@Model.State.Gender's style</strong></p><span>Results match your selected Pinterest tags.</span></div>
+        <div class="look-grid">
+            @foreach (var look in Model.Looks)
+            {
+                @await Html.PartialAsync("_LookCard", new StyleApp.Models.LookCardViewModel { Look = look, IsFavorite = Model.State.Favorites.Any(saved => saved.Id == look.Id), IsWishlisted = Model.State.Wishlist.Any(saved => saved.Id == look.Id), ReturnUrl = returnUrl })
+            }
+        </div>
+    }
+</section>
